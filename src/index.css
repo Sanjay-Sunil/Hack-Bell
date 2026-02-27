@@ -42,6 +42,11 @@
 
 /* ─── Drop Zone ────────────────────────────────────────────────────────────── */
 
+html, body {
+  width: 420px;
+  min-height: 580px;
+}
+
 .su-dropzone {
   position: relative;
   display: flex;

@@ -85,5 +85,6 @@ export async function getPDFPageCount(pdfBytes: ArrayBuffer): Promise<number> {
  * Converts redacted PDF bytes to a File object.
  */
 export function pdfBytesToFile(bytes: Uint8Array, fileName: string): File {
-    return new File([bytes], fileName, { type: 'application/pdf' });
+    const uint8 = new Uint8Array(bytes as any);
+    return new File([uint8], fileName, { type: 'application/pdf' });
 }

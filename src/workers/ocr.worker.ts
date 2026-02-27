@@ -14,6 +14,17 @@ interface OCRWordResult {
     bbox: BBox;
 }
 
+interface TesseractWord {
+    text: string;
+    confidence: number;
+    bbox: {
+        x0: number;
+        y0: number;
+        x1: number;
+        y1: number;
+    };
+}
+
 let tesseractWorker: import('tesseract.js').Worker | null = null;
 
 async function initTesseract(): Promise<import('tesseract.js').Worker> {
@@ -50,8 +61,8 @@ self.onmessage = async (e: MessageEvent) => {
         const result = await worker.recognize(imageSource);
         const words: OCRWordResult[] = [];
 
-        if (result.data.words) {
-            for (const word of result.data.words) {
+        if (result.data && 'words' in result.data) {
+            for (const word of (result.data.words as TesseractWord[])) {
                 words.push({
                     text: word.text,
                     confidence: word.confidence / 100,

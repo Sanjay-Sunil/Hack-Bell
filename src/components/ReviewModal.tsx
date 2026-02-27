@@ -48,37 +48,11 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
 }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [localEntities, setLocalEntities] = useState<DetectedEntity[]>(entities);
-    const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
-    const [scale, setScale] = useState(1);
+    
 
     useEffect(() => {
         setLocalEntities(entities);
     }, [entities]);
-
-    useEffect(() => {
-        if (!imageDataUrl || !canvasRef.current) return;
-
-        const canvas = canvasRef.current;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return;
-
-        const img = new Image();
-        img.onload = () => {
-            const containerWidth = canvas.parentElement?.clientWidth ?? 800;
-            const s = Math.min(1, containerWidth / img.naturalWidth);
-            setScale(s);
-            setImageSize({ width: img.naturalWidth, height: img.naturalHeight });
-
-            canvas.width = img.naturalWidth * s;
-            canvas.height = img.naturalHeight * s;
-
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-            // Draw bounding boxes
-            drawBoundingBoxes(ctx, localEntities, s);
-        };
-        img.src = imageDataUrl;
-    }, [imageDataUrl, localEntities]);
 
     function drawBoundingBoxes(
         ctx: CanvasRenderingContext2D,
@@ -133,6 +107,30 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
             ctx.fillText(label, sx + 4 * s, Math.max(labelH - 4 * s, labelY + labelH - 4 * s));
         }
     }
+
+    useEffect(() => {
+        if (!imageDataUrl || !canvasRef.current) return;
+
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        const img = new Image();
+        img.onload = () => {
+            const containerWidth = canvas.parentElement?.clientWidth ?? 800;
+            const s = Math.min(1, containerWidth / img.naturalWidth);
+            
+
+            canvas.width = img.naturalWidth * s;
+            canvas.height = img.naturalHeight * s;
+
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+            // Draw bounding boxes
+            drawBoundingBoxes(ctx, localEntities, s);
+        };
+        img.src = imageDataUrl;
+    }, [imageDataUrl, localEntities]);
 
     function toggleEntity(entityId: string) {
         setLocalEntities(prev =>

@@ -54,8 +54,8 @@ export async function runDetectionPipeline(
             // Get forbidden list from Gemini (with retry for rate limits)
             const forbiddenList = await withRetry(
                 () => getGeminiForbiddenList(fullText, requiredFields, geminiApiKey, onProgress),
-                3,       // max retries
-                15000    // initial delay (15s, matching Gemini's 12s retry hint)
+                2,       // max retries (reduced from 3)
+                5000     // initial delay (5s, faster retry for better UX)
             );
 
             if (forbiddenList.length > 0 && spatialMap.length > 0) {
@@ -71,8 +71,8 @@ export async function runDetectionPipeline(
             try {
                 const legacyEntities = await withRetry(
                     () => runGeminiDetection(fullText, words, geminiApiKey, pageIndex, onProgress),
-                    2,
-                    15000
+                    1,
+                    5000
                 );
                 matchingEngineEntities = legacyEntities;
                 console.log('[Pipeline] Legacy Gemini entities:', matchingEngineEntities.length);
@@ -151,6 +151,7 @@ function runNLPWorker(words: OCRWord[], pageIndex: number): Promise<DetectedEnti
 
 /**
  * Retries a function on 429 rate-limit errors with exponential backoff.
+ * Skips retries if quota is exhausted (RESOURCE_EXHAUSTED or daily limit reached).
  */
 async function withRetry<T>(
     fn: () => Promise<T>,
@@ -165,9 +166,19 @@ async function withRetry<T>(
             return await fn();
         } catch (err) {
             lastError = err instanceof Error ? err : new Error(String(err));
+            const errorMsg = lastError.message.toLowerCase();
+
+            // Skip retries if quota is exhausted or resource limit reached
+            if (errorMsg.includes('resource_exhausted') ||
+                errorMsg.includes('quota') ||
+                errorMsg.includes('daily limit') ||
+                errorMsg.includes('rate limit exceeded')) {
+                console.warn('[Pipeline] Quota/resource exhausted, skipping retries');
+                throw lastError;
+            }
 
             // Only retry on 429 rate limit errors
-            if (!lastError.message.includes('429') || attempt >= maxRetries) {
+            if (!errorMsg.includes('429') || attempt >= maxRetries) {
                 throw lastError;
             }
 

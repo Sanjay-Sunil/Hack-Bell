@@ -163,7 +163,7 @@ Return ONLY a valid JSON array of strings. No explanation, no markdown.
 Example: ["9876 5432 1098", "Government of India", "DOB: 01/01/1990", "Male"]`;
 
     const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
         {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -238,7 +238,7 @@ ${fullText}
 Example output: [{"text":"Rahul Sharma","category":"name"},{"text":"9876543210","category":"phone"},{"text":"AB12C3456D","category":"pan"}]`;
 
     const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
         {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

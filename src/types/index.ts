@@ -10,6 +10,10 @@ export type PIIType =
     | 'MEDICAL'
     | 'EMAIL'
     | 'DOB'
+    | 'ACCOUNT_NUMBER'
+    | 'IFSC'
+    | 'INVOICE_NO'
+    | 'GST'
     | 'SENSITIVE';
 
 export interface BoundingBox {
@@ -47,7 +51,7 @@ export interface DetectedEntity {
     confidence: number;
     bbox: BoundingBox;
     masked: boolean;
-    layer: 1 | 2 | 3;
+    layer: 0 | 1 | 2 | 3 | 4; // 0=regex, 1=enhanced, 2=NLP, 3=spatial, 4=ML
 }
 
 // ─── Worker Message Types ───────────────────────────────────────────────────

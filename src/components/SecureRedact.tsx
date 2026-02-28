@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { SecureUploader } from './SecureUploader';
 import { DocTypeSelector } from './DocTypeSelector';
-import type { EvidenceLog, PIIType } from '../types';
+import type { EvidenceLog } from '../types';
 
 // ─── Public API Types ───────────────────────────────────────────────────────
 
@@ -54,7 +54,7 @@ export interface SecureRedactProps {
    * Whether to show the document type selector UI.
    * When true, users can pick a document type and select which fields to keep.
    * When false, only the uploader is shown and `requiredFields` prop is used directly.
-   * @default false
+   * @default true
    */
   showDocTypeSelector?: boolean;
 
@@ -97,7 +97,7 @@ export const SecureRedact: React.FC<SecureRedactProps> = ({
   confidenceThreshold = 0.5,
   maxFileSizeMB = 25,
   acceptedTypes,
-  showDocTypeSelector = false,
+  showDocTypeSelector = true,
   className,
 }) => {
   const [selectedDocType, setSelectedDocType] = useState<string | null>(null);

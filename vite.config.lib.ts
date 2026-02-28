@@ -12,6 +12,8 @@ export default defineConfig({
       insertTypesEntry: true,
     }),
   ],
+  // CRITICAL: relative base so worker URLs resolve from node_modules correctly
+  base: './',
   worker: {
     format: 'es',
   },
@@ -34,7 +36,7 @@ export default defineConfig({
         // Ensure CSS is extracted to style.css
         assetFileNames: (assetInfo) => {
           if (assetInfo.names?.[0]?.endsWith('.css')) return 'style.css';
-          return assetInfo.names?.[0] ?? 'assets/[name]-[hash][extname]';
+          return 'assets/[name]-[hash][extname]';
         },
       },
     },

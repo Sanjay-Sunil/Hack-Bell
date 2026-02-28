@@ -43,7 +43,7 @@ export class WorkerPool {
         );
         this.advancedWorker.onmessage = (e: MessageEvent) => {
             const data = e.data;
-            
+
             if (data.type === 'WORKER_READY') {
                 console.log('[WorkerPool] Advanced detection worker ready');
                 return;

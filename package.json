@@ -1,6 +1,6 @@
 {
   "name": "secure-redact",
-  "version": "1.0.0",
+  "version": "1.0.4",
   "description": "Client-side PII detection and redaction React component. Upload documents, automatically detect sensitive information using OCR + AI, review detections, and download redacted copies — all without sending originals to any server.",
   "private": false,
   "type": "module",

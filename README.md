@@ -3,17 +3,17 @@
 > Client-side PII detection and redaction React component. Upload documents, automatically detect sensitive information using OCR + AI, review detections, and download redacted copies — **all without sending originals to any server**.
 
 [![npm version](https://img.shields.io/npm/v/secure-redact.svg)](https://www.npmjs.com/package/secure-redact)
-[![license](https://img.shields.io/npm/l/secure-redact.svg)](https://github.com/your-repo/secure-redact/blob/main/LICENSE)
+[![license](https://img.shields.io/npm/l/secure-redact.svg)](https://github.com/johhhnnnnyyyyy/Hack-Bell/blob/main/LICENSE)
 
 ## Features
 
-- 🔒 **100% Client-Side** — Documents never leave the browser
-- 🤖 **AI-Powered** — Gemini 2.0 Flash for semantic PII detection with pixel-perfect accuracy
-- 📝 **Multi-Layer Detection** — Regex + NLP + Spatial Analysis + Gemini AI
-- 📄 **PDF & Image Support** — PNG, JPEG, WebP, BMP, and PDF documents
-- 🎯 **Pixel-Perfect Redaction** — Word-ID based mapping for exact bounding boxes
-- 👁️ **Review UI** — Interactive modal to review and toggle detections before redacting
-- 📋 **Audit Trail** — Evidence log of all detected entities and actions taken
+-  **100% Client-Side** — Documents never leave the browser
+-  **AI-Powered** — Uses Tensorflow.js for semantic PII detection with pixel-perfect accuracy
+-  **Multi-Layer Detection** — Regex + NLP + Spatial Analysis + Tensorflow.js 
+-  **PDF & Image Support** — PNG, JPEG, WebP, BMP, and PDF documents
+-  **Pixel-Perfect Redaction** — Word-ID based mapping for exact bounding boxes
+-  **Review UI** — Interactive modal to review and toggle detections before redacting
+-  **Audit Trail** — Evidence log of all detected entities and actions taken
 - 🇮🇳 **Indian Documents** — Built-in support for Aadhaar, PAN, GST, IFSC, etc.
 
 ## Install
@@ -24,108 +24,101 @@ npm install secure-redact
 
 ## Quick Start
 
+The component provides a complete document type selector out of the box. Users select their document type (Aadhaar, PAN, Health Report, etc.), choose which fields to keep visible, upload the file, and receive a redacted version.
+
 ```tsx
 import { SecureRedact } from 'secure-redact';
 import 'secure-redact/style.css';
 
 function App() {
+  const handleComplete = (maskedFile, evidence) => {
+    // maskedFile: File — the redacted document ready to download/upload
+    console.log('Redacted file:', maskedFile.name, maskedFile.size);
+
+    // evidence: EvidenceLog — audit trail of detections
+    console.log('Entities detected:', evidence.detectedEntities.length);
+
+    // Download the redacted file
+    const url = URL.createObjectURL(maskedFile);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = maskedFile.name;
+    a.click();
+  };
+
   return (
     <SecureRedact
-      apiKey="your-gemini-api-key"
-      requiredFields={['NAME', 'DOB']}
-      onComplete={(maskedFile, evidence) => {
-        // maskedFile: File — the redacted document ready to download/upload
-        console.log('Redacted file:', maskedFile.name, maskedFile.size);
-
-        // evidence: EvidenceLog — audit trail of detections
-        console.log('Entities detected:', evidence.detectedEntities.length);
-      }}
+      apiKey="your-tensorflow-api-key"
+      onComplete={handleComplete}
     />
   );
 }
 ```
 
+**That's it!** The component automatically shows:
+1. **Step 1** — Document Type selector (Aadhaar Card, PAN Card, Health Report, Income Tax Return, Invoice, Bank Statement)
+2. **Step 2** — Field selection (choose which fields to keep visible, everything else is redacted)
+3. **Step 3** — File upload dropzone
+4. **Step 4** — Review modal (preview detections, toggle individual entities)
+5. **Step 5** — Returns the redacted `File` + `EvidenceLog`
+
+## Supported Document Types
+
+| Document | Fields |
+|----------|--------|
+| 🪪 **Aadhaar Card** | Name, Address, DOB, Aadhaar Number, Phone, Gender, Photo, QR Code |
+| 💳 **PAN Card** | Name, Father's Name, DOB, PAN Number, Photo, Signature |
+| 🏥 **Health Report** | Patient Name, Age, DOB, Doctor, Hospital, Diagnosis, Medications, Test Results, Blood Group |
+| 📊 **Income Tax Return** | Name, PAN, Address, Income, Tax Amount, Assessment Year, TAN, Employer |
+| 🧾 **Invoice** | Company, Customer, Address, Invoice No, Date, Amount, GST, Line Items, Bank Details |
+| 🏦 **Bank Statement** | Account Holder, Account No, IFSC, Address, Transactions, Balance, Bank Name, Branch, Date |
+
 ## Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `apiKey` | `string` | *required* | Gemini API key ([get one here](https://aistudio.google.com/apikey)) |
-| `requiredFields` | `string[]` | `[]` | PII types to KEEP visible (everything else is redacted) |
-| `onComplete` | `(file: File, evidence: EvidenceLog) => void` | *required* | Called when redaction is complete |
+| `apiKey` | `string` | *required* | Tensorflow.js API key  |
+| `onComplete` | `(file, evidence) => void` | *required* | Called when redaction is complete |
+| `requiredFields` | `string[]` | `[]` | PII types to KEEP visible (when not using doc type UI) |
 | `confidenceThreshold` | `number` | `0.5` | Minimum confidence (0-1) for PII detection |
 | `maxFileSizeMB` | `number` | `25` | Maximum file size in MB |
+| `showDocTypeSelector` | `boolean` | `true` | Show document type picker UI |
 | `acceptedTypes` | `string[]` | Images + PDF | Accepted MIME types |
-| `showDocTypeSelector` | `boolean` | `false` | Show document type picker UI |
 | `className` | `string` | — | Custom CSS class for root container |
 
-## Available PII Types
-
-Use these values in the `requiredFields` array:
-
-| Type | Description |
-|------|-------------|
-| `NAME` | Person/organization names |
-| `PHONE` | Phone/mobile numbers |
-| `EMAIL` | Email addresses |
-| `ADDRESS` | Physical addresses |
-| `AADHAAR` | Aadhaar (UID) numbers |
-| `PAN` | PAN card numbers |
-| `CREDIT_CARD` | Credit/debit card numbers |
-| `DOB` | Dates of birth |
-| `MEDICAL` | Medical information |
-| `ACCOUNT_NUMBER` | Bank account numbers |
-| `IFSC` | IFSC codes |
-| `INVOICE_NO` | Invoice numbers |
-| `GST` | GST/GSTIN numbers |
-
 ## Examples
+
+### Default (with document type selector)
+
+```tsx
+<SecureRedact
+  apiKey="your-key"
+  onComplete={(file, evidence) => {
+    // User picks doc type → selects fields → uploads → reviews → gets redacted file
+    downloadFile(file);
+  }}
+/>
+```
+
+### Without document type selector (developer controls fields)
+
+```tsx
+<SecureRedact
+  apiKey="your-key"
+  showDocTypeSelector={false}
+  requiredFields={['NAME', 'DOB']}   // only keep name and DOB visible
+  onComplete={(file) => uploadToServer(file)}
+/>
+```
 
 ### Redact everything (maximum privacy)
 
 ```tsx
 <SecureRedact
   apiKey="your-key"
+  showDocTypeSelector={false}
   requiredFields={[]}  // nothing kept visible
   onComplete={(file) => downloadFile(file)}
-/>
-```
-
-### Keep only name and address visible
-
-```tsx
-<SecureRedact
-  apiKey="your-key"
-  requiredFields={['NAME', 'ADDRESS']}
-  onComplete={(file, evidence) => {
-    console.log(`${evidence.detectedEntities.length} entities processed`);
-  }}
-/>
-```
-
-### With document type selector UI
-
-```tsx
-<SecureRedact
-  apiKey="your-key"
-  showDocTypeSelector={true}
-  onComplete={(file) => uploadToServer(file)}
-/>
-```
-
-### Using the lower-level component
-
-```tsx
-import { SecureUploader } from 'secure-redact';
-import 'secure-redact/style.css';
-
-<SecureUploader
-  apiKey="your-key"
-  requiredFields={['NAME']}
-  confidenceThreshold={0.7}
-  onUpload={(maskedFile, evidenceJson) => {
-    const evidence = JSON.parse(evidenceJson);
-    // ...
-  }}
 />
 ```
 
@@ -140,7 +133,7 @@ Multi-Layer PII Detection:
   ├── Layer 0: Regex + Checksums (Aadhaar, PAN, CC, Phone)
   ├── Layer 1: NLP Heuristics (Names, Addresses, Medical)
   ├── Layer 2: Spatial Key-Value Mapping ("Name:" → "John Doe")
-  └── Layer 4: Gemini AI Word-ID Detection (pixel-perfect)
+  └── Layer 4: Tensorflow.js Word-ID Detection (pixel-perfect)
     ↓
 Interactive Review Modal
     ↓
@@ -170,7 +163,7 @@ interface EvidenceLog {
 ## Requirements
 
 - **React** ≥ 18.0.0
-- **Gemini API Key** — [Get one free](https://aistudio.google.com/apikey)
+- **Tensorflow.js** — 
 - **Vite** (recommended) — Workers use `new URL(..., import.meta.url)` syntax
 
 ## License

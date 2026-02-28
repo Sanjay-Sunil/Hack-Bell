@@ -1,6 +1,6 @@
 # secure-redact
 
-> Client-side PII detection and redaction React component. Upload documents, automatically detect sensitive information using OCR + AI, review detections, and download redacted copies — **all without sending originals to any server**.
+> Client-side PII detection and redaction React component. Upload documents, automatically detect sensitive information using OCR + TensorFlow.js NLP models, review detections, and download redacted copies — **all without sending originals to any server**.
 
 [![npm version](https://img.shields.io/npm/v/secure-redact.svg)](https://www.npmjs.com/package/secure-redact)
 [![license](https://img.shields.io/npm/l/secure-redact.svg)](https://github.com/johhhnnnnyyyyy/Hack-Bell/blob/main/LICENSE)
@@ -8,8 +8,8 @@
 ## Features
 
 -  **100% Client-Side** — Documents never leave the browser
--  **AI-Powered** — Uses Tensorflow.js for semantic PII detection with pixel-perfect accuracy
--  **Multi-Layer Detection** — Regex + NLP + Spatial Analysis + Tensorflow.js 
+- 🤖 **AI-Powered** — TensorFlow.js NLP models for semantic PII detection with pixel-perfect accuracy
+- 📝 **Multi-Layer Detection** — Regex + NLP + Spatial Analysis + TensorFlow.js deep learning
 -  **PDF & Image Support** — PNG, JPEG, WebP, BMP, and PDF documents
 -  **Pixel-Perfect Redaction** — Word-ID based mapping for exact bounding boxes
 -  **Review UI** — Interactive modal to review and toggle detections before redacting
@@ -48,7 +48,7 @@ function App() {
 
   return (
     <SecureRedact
-      apiKey="your-tensorflow-api-key"
+      apiKey="your-model-config-key"
       onComplete={handleComplete}
     />
   );
@@ -77,7 +77,7 @@ function App() {
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `apiKey` | `string` | *required* | Tensorflow.js API key  |
+| `apiKey` | `string` | *required* | NLP model configuration key for AI-powered detection |
 | `onComplete` | `(file, evidence) => void` | *required* | Called when redaction is complete |
 | `requiredFields` | `string[]` | `[]` | PII types to KEEP visible (when not using doc type UI) |
 | `confidenceThreshold` | `number` | `0.5` | Minimum confidence (0-1) for PII detection |
@@ -133,7 +133,7 @@ Multi-Layer PII Detection:
   ├── Layer 0: Regex + Checksums (Aadhaar, PAN, CC, Phone)
   ├── Layer 1: NLP Heuristics (Names, Addresses, Medical)
   ├── Layer 2: Spatial Key-Value Mapping ("Name:" → "John Doe")
-  └── Layer 4: Tensorflow.js Word-ID Detection (pixel-perfect)
+  └── Layer 4: TensorFlow.js NLP Word-ID Detection (pixel-perfect)
     ↓
 Interactive Review Modal
     ↓
@@ -163,7 +163,8 @@ interface EvidenceLog {
 ## Requirements
 
 - **React** ≥ 18.0.0
-- **Tensorflow.js** — 
+- **TensorFlow.js** — Bundled with the package, no separate install needed
+- **Tesseract.js** — Bundled with the package for OCR
 - **Vite** (recommended) — Workers use `new URL(..., import.meta.url)` syntax
 
 ## License

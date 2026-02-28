@@ -9,9 +9,9 @@
   "types": "./dist/lib.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/lib.d.ts",
       "import": "./dist/secure-redact.es.js",
-      "require": "./dist/secure-redact.umd.js",
-      "types": "./dist/lib.d.ts"
+      "require": "./dist/secure-redact.umd.js"
     },
     "./style.css": "./dist/style.css"
   },
